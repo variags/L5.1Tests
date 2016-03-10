@@ -41,22 +41,28 @@ public class Main {
 
         logger.info("Starting at http://127.0.0.1:" + portString);
 
-        AccountServerI accountServer = new AccountServer(1);
+        AccountServerI accountserver = new AccountServer(1);
 
-        AccountServerControllerMBean serverStatistics = new AccountServerController(accountServer);
+
+
+        AccountServerControllerMBean serverStatistics = new AccountServerController(accountserver);
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         ObjectName name = new ObjectName("ServerManager:type=AccountServerController");
         mbs.registerMBean(serverStatistics, name);
 
-        AccountServerController accountServerController = new AccountServerController(accountServer);
+        AccountServerController accountServerController = new AccountServerController(accountserver);
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
         ObjectName objectName = new ObjectName("Admin:type=AccountServerController.usersLimit");
         mBeanServer.registerMBean(accountServerController, objectName);
 
+
         Server server = new Server(port);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.addServlet(new ServletHolder(new HomePageServlet(accountServer)), HomePageServlet.PAGE_URL);
-        context.addServlet(new ServletHolder(new AdminPageServlet(accountServer)), AdminPageServlet.PAGE_URL);
+        context.addServlet(new ServletHolder(new HomePageServlet(accountserver)), HomePageServlet.PAGE_URL);
+        context.addServlet(new ServletHolder(new AdminPageServlet(accountserver)), AdminPageServlet.PAGE_URL);
+
+
+
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);
